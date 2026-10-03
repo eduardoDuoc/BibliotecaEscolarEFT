@@ -1,0 +1,32 @@
+package controller;
+
+import dao.EstudianteDAO;
+import dao.impl.EstudianteDAOImpl;
+import model.Estudiante;
+
+import java.util.List;
+
+public class EstudianteController {
+
+    private final EstudianteDAO estudianteDAO;
+
+    public EstudianteController() {
+        this.estudianteDAO = new EstudianteDAOImpl();
+    }
+
+    public boolean crearEstudiante(Estudiante estudiante) {
+        return estudianteDAO.create(estudiante);
+    }
+
+    public List<Estudiante> listarEstudiantes() {
+        return estudianteDAO.readAll();
+    }
+
+    public boolean actualizarEstudiante(Estudiante estudiante) {
+        return estudianteDAO.update(estudiante);
+    }
+
+    public boolean eliminarEstudiante(int id) {
+        return estudianteDAO.delete(id);
+    }
+}
