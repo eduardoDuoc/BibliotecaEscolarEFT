@@ -24,6 +24,21 @@ public class Libro {
 
     }
 
+    public Libro(String titulo,
+                 String autor,
+                 String isbn,
+                 String editorial,
+                 int stock,
+                 int idCategoria) {
+
+        this.titulo = titulo;
+        this.autor = autor;
+        this.isbn = isbn;
+        this.editorial = editorial;
+        this.stock = stock;
+        this.idCategoria = idCategoria;
+    }
+
     public int getId() {
         return id;
     }

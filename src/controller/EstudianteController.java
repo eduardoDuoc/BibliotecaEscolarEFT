@@ -29,4 +29,16 @@ public class EstudianteController {
     public boolean eliminarEstudiante(int id) {
         return estudianteDAO.delete(id);
     }
+
+    public Estudiante buscarPorRut(String rut) {
+
+        for (Estudiante estudiante : estudianteDAO.readAll()) {
+
+            if (estudiante.getRut().equalsIgnoreCase(rut)) {
+                return estudiante;
+            }
+        }
+
+        return null;
+    }
 }

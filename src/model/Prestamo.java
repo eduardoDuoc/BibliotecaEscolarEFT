@@ -24,6 +24,20 @@ public class Prestamo {
 
     }
 
+    public Prestamo(
+            int idEstudiante,
+            int idLibro,
+            LocalDate fechaPrestamo,
+            LocalDate fechaDevolucion,
+            boolean devuelto) {
+
+        this.idEstudiante = idEstudiante;
+        this.idLibro = idLibro;
+        this.fechaPrestamo = fechaPrestamo;
+        this.fechaDevolucion = fechaDevolucion;
+        this.devuelto = devuelto;
+    }
+
     public int getId() {
         return id;
     }

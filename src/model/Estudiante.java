@@ -20,6 +20,13 @@ public class Estudiante {
 
     }
 
+    public Estudiante(String nombre, String rut, String curso, String correo) {
+        this.nombre = nombre;
+        this.rut = rut;
+        this.curso = curso;
+        this.correo = correo;
+    }
+
     public int getId() {
         return id;
     }
