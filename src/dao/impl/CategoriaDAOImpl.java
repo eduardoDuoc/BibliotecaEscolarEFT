@@ -1,3 +1,4 @@
+
 package dao.impl;
 
 import dao.CategoriaDAO;
@@ -22,13 +23,14 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, categoria.getNombre());
+                ps.setString(1, categoria.getNombre());
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+            }
 
         } catch (SQLException e) {
 
@@ -51,18 +53,18 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
 
-            ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
 
-            while (rs.next()) {
+                    Categoria categoria = new Categoria();
 
-                Categoria categoria = new Categoria();
+                    categoria.setId(rs.getInt("id"));
+                    categoria.setNombre(rs.getString("nombre"));
 
-                categoria.setId(rs.getInt("id"));
-                categoria.setNombre(rs.getString("nombre"));
-
-                categorias.add(categoria);
+                    categorias.add(categoria);
+                }
             }
 
         } catch (SQLException e) {
@@ -85,14 +87,15 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, categoria.getNombre());
-            ps.setInt(2, categoria.getId());
+                ps.setString(1, categoria.getNombre());
+                ps.setInt(2, categoria.getId());
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+            }
 
         } catch (SQLException e) {
 
@@ -114,13 +117,14 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+                ps.setInt(1, id);
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+            }
 
         } catch (SQLException e) {
 

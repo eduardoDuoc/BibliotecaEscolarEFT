@@ -4,11 +4,11 @@ package view;
 import controller.EstudianteController;
 import controller.LibroController;
 import controller.PrestamoController;
-
+import model.Persona;
 import model.Estudiante;
 import model.Libro;
 import model.Prestamo;
-
+import model.Usuario;
 import thread.ProcesoPrestamo;
 
 import javax.swing.*;
@@ -31,8 +31,9 @@ public class VentanaEstudiante extends JFrame {
     private final EstudianteController estudianteController;
     private final LibroController libroController;
     private final PrestamoController prestamoController;
+    private final Estudiante estudianteAutenticado;
 
-    public VentanaEstudiante() {
+    public VentanaEstudiante(Usuario usuarioAutenticado) {
 
         setContentPane(pnlEstudiantes);
         setTitle("Biblioteca Escolar - Estudiante");
@@ -43,6 +44,42 @@ public class VentanaEstudiante extends JFrame {
         estudianteController = new EstudianteController();
         libroController = new LibroController();
         prestamoController = new PrestamoController();
+
+
+        estudianteAutenticado =
+                estudianteController.buscarPorRut(
+                        usuarioAutenticado.getRut()
+                );
+
+// Mostrar la identidad del usuario autenticado
+        txtRut.setText(usuarioAutenticado.getRut());
+
+        if (estudianteAutenticado != null) {
+
+            txtNombre.setText(estudianteAutenticado.getNombre());
+            txtCurso.setText(estudianteAutenticado.getCurso());
+            txtCorreo.setText(estudianteAutenticado.getCorreo());
+
+        } else {
+
+            txtNombre.setText(usuarioAutenticado.getNombre());
+            txtCorreo.setText(usuarioAutenticado.getCorreo());
+
+            reservarButton.setEnabled(false);
+            devolverButton.setEnabled(false);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No existe una ficha de estudiante para este RUT.\n"
+                            + "Solicite su registro al bibliotecario."
+            );
+        }
+
+        txtNombre.setEditable(false);
+        txtRut.setEditable(false);
+        txtCurso.setEditable(false);
+        txtCorreo.setEditable(false);
+
 
         cargarLibros();
 
@@ -171,12 +208,6 @@ public class VentanaEstudiante extends JFrame {
 
     // LIMPIAR CAMPOS
     private void limpiarCampos() {
-
-        txtNombre.setText("");
-        txtRut.setText("");
-        txtCurso.setText("");
-        txtCorreo.setText("");
-
         table1.clearSelection();
     }
 
@@ -199,52 +230,17 @@ public class VentanaEstudiante extends JFrame {
             return;
         }
 
-        String nombre = txtNombre.getText().trim();
-        String rut = txtRut.getText().trim();
-        String curso = txtCurso.getText().trim();
-        String correo = txtCorreo.getText().trim();
+        Estudiante estudiante = estudianteAutenticado;
 
-        // BUSCAR ESTUDIANTE POR RUT
-        Estudiante estudiante =
-                estudianteController.buscarPorRut(rut);
-
-        // SI NO EXISTE, REGISTRARLO
         if (estudiante == null) {
-
-            Estudiante nuevoEstudiante =
-                    new Estudiante(
-                            nombre,
-                            rut,
-                            curso,
-                            correo
-                    );
-
-            boolean creado =
-                    estudianteController.crearEstudiante(nuevoEstudiante);
-
-            if (!creado) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "No se pudo registrar el estudiante."
-                );
-
-                return;
-            }
-
-            estudiante =
-                    estudianteController.buscarPorRut(rut);
-
-            if (estudiante == null) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "No se pudo recuperar el estudiante registrado."
-                );
-
-                return;
-            }
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No existe un estudiante asociado a esta sesión."
+            );
+            return;
         }
+
+        final Persona personaPrestamo = estudiante;
 
         // OBTENER LIBRO SELECCIONADO
         int idLibro = Integer.parseInt(
@@ -264,7 +260,6 @@ public class VentanaEstudiante extends JFrame {
 
             return;
         }
-
         // DESHABILITAR BOTON DURANTE EL PROCESO
         reservarButton.setEnabled(false);
 
@@ -282,7 +277,8 @@ public class VentanaEstudiante extends JFrame {
 
                                 JOptionPane.showMessageDialog(
                                         this,
-                                        "Libro reservado correctamente."
+                                        "Libro reservado correctamente.\n"
+                                                + personaPrestamo.obtenerDescripcion()
                                 );
 
                             } else {
@@ -321,11 +317,7 @@ public class VentanaEstudiante extends JFrame {
             return;
         }
 
-        String rut = txtRut.getText().trim();
-
-        // BUSCAR ESTUDIANTE
-        Estudiante estudiante =
-                estudianteController.buscarPorRut(rut);
+        Estudiante estudiante = estudianteAutenticado;
 
         if (estudiante == null) {
 
@@ -358,33 +350,11 @@ public class VentanaEstudiante extends JFrame {
             return;
         }
 
-        int stock = Integer.parseInt(
-                table1.getValueAt(fila, 5).toString()
-        );
 
-        int idCategoria = Integer.parseInt(
-                table1.getValueAt(fila, 6).toString()
-        );
+        boolean devolucionCorrecta =
+                prestamoController.devolverPrestamo(prestamo.getId());
 
-        String titulo =
-                table1.getValueAt(fila, 1).toString();
-
-        String autor =
-                table1.getValueAt(fila, 2).toString();
-
-        String isbn =
-                table1.getValueAt(fila, 3).toString();
-
-        String editorial =
-                table1.getValueAt(fila, 4).toString();
-
-        // ACTUALIZAR EL ESTADO DEL PRESTAMO
-        prestamo.setDevuelto(true);
-
-        boolean prestamoActualizado =
-                prestamoController.actualizarPrestamo(prestamo);
-
-        if (!prestamoActualizado) {
+        if (!devolucionCorrecta) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -394,29 +364,7 @@ public class VentanaEstudiante extends JFrame {
             return;
         }
 
-        // AUMENTAR STOCK
-        Libro libro = new Libro(
-                idLibro,
-                titulo,
-                autor,
-                isbn,
-                editorial,
-                stock + 1,
-                idCategoria
-        );
 
-        boolean stockActualizado =
-                libroController.actualizarLibro(libro);
-
-        if (!stockActualizado) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Se registró la devolución, pero no se pudo actualizar el stock."
-            );
-
-            return;
-        }
 
         JOptionPane.showMessageDialog(
                 this,

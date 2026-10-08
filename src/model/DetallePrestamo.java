@@ -121,4 +121,13 @@ public class DetallePrestamo {
     public void setDevuelto(boolean devuelto) {
         this.devuelto = devuelto;
     }
+
+
+    public boolean estaAtrasado() {
+
+        return !devuelto
+                && fechaDevolucion != null
+                && fechaDevolucion.isBefore(LocalDate.now());
+    }
+
 }

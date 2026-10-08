@@ -108,7 +108,7 @@ public class VentanaReportes extends JFrame {
                     detalle.getTituloLibro(),
                     detalle.getFechaPrestamo(),
                     detalle.getFechaDevolucion(),
-                    "Pendiente"
+                    detalle.estaAtrasado() ? "Atrasado" : "Pendiente"
             };
 
             modelo.addRow(fila);
@@ -174,11 +174,20 @@ public class VentanaReportes extends JFrame {
 
             String estado;
 
+
             if (detalle.isDevuelto()) {
+
                 estado = "Entregado";
+
+            } else if (detalle.estaAtrasado()) {
+
+                estado = "Atrasado";
+
             } else {
+
                 estado = "Pendiente";
             }
+
 
             Object[] fila = {
                     detalle.getNombreEstudiante(),

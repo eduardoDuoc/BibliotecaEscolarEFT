@@ -35,7 +35,7 @@ public class DatabaseConnection {
         }
     }
 
-    public static DatabaseConnection getInstance() {
+    public static synchronized DatabaseConnection getInstance() {
 
         if (instance == null) {
             instance = new DatabaseConnection();
@@ -47,4 +47,16 @@ public class DatabaseConnection {
     public Connection getConnection() {
         return connection;
     }
+
+
+    public Connection crearConexionTransaccional()
+            throws SQLException {
+
+        return DriverManager.getConnection(
+                URL,
+                USER,
+                PASSWORD
+        );
+    }
+
 }

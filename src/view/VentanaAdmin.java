@@ -23,6 +23,7 @@ public class VentanaAdmin extends JFrame {
     private JButton limpiarCamposButton;
     private JButton prestamosButton;
     private JButton reportesButton;
+    private JButton gestionarEstudiantesButton;
 
     private LibroController libroController;
 
@@ -30,7 +31,7 @@ public class VentanaAdmin extends JFrame {
 
         setContentPane(pnlAdmin);
         setTitle("Biblioteca Escolar - Administrador");
-        setSize(700, 500);
+        setSize(900, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -47,6 +48,14 @@ public class VentanaAdmin extends JFrame {
         eliminarButton.addActionListener(e -> eliminarLibro());
 
         limpiarCamposButton.addActionListener(e -> limpiarCampos());
+
+        gestionarEstudiantesButton.addActionListener(e -> {
+
+            VentanaGestionEstudiantes ventana =
+                    new VentanaGestionEstudiantes();
+
+            ventana.setVisible(true);
+        });
 
         reportesButton.addActionListener(e -> {
 

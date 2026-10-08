@@ -25,17 +25,19 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, usuario.getNombre());
-            ps.setString(2, usuario.getRut());
-            ps.setString(3, usuario.getCorreo());
-            ps.setString(4, usuario.getContrasena());
-            ps.setString(5, usuario.getRol());
+                ps.setString(1, usuario.getNombre());
+                ps.setString(2, usuario.getRut());
+                ps.setString(3, usuario.getCorreo());
+                ps.setString(4, usuario.getContrasena());
+                ps.setString(5, usuario.getRol());
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+
+            }
 
         } catch (SQLException e) {
 
@@ -58,22 +60,23 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
 
-            ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
 
-            while (rs.next()) {
+                    Usuario usuario = new Usuario();
 
-                Usuario usuario = new Usuario();
+                    usuario.setId(rs.getInt("id"));
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setRut(rs.getString("rut"));
+                    usuario.setCorreo(rs.getString("correo"));
+                    usuario.setContrasena(rs.getString("contraseña"));
+                    usuario.setRol(rs.getString("rol"));
 
-                usuario.setId(rs.getInt("id"));
-                usuario.setNombre(rs.getString("nombre"));
-                usuario.setRut(rs.getString("rut"));
-                usuario.setCorreo(rs.getString("correo"));
-                usuario.setContrasena(rs.getString("contraseña"));
-                usuario.setRol(rs.getString("rol"));
+                    usuarios.add(usuario);
+                }
 
-                usuarios.add(usuario);
             }
 
         } catch (SQLException e) {
@@ -102,18 +105,20 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, usuario.getNombre());
-            ps.setString(2, usuario.getRut());
-            ps.setString(3, usuario.getCorreo());
-            ps.setString(4, usuario.getContrasena());
-            ps.setString(5, usuario.getRol());
-            ps.setInt(6, usuario.getId());
+                ps.setString(1, usuario.getNombre());
+                ps.setString(2, usuario.getRut());
+                ps.setString(3, usuario.getCorreo());
+                ps.setString(4, usuario.getContrasena());
+                ps.setString(5, usuario.getRol());
+                ps.setInt(6, usuario.getId());
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+
+            }
 
         } catch (SQLException e) {
 
@@ -135,13 +140,15 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+                ps.setInt(1, id);
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+
+            }
 
         } catch (SQLException e) {
 

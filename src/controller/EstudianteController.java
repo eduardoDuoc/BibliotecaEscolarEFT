@@ -41,4 +41,10 @@ public class EstudianteController {
 
         return null;
     }
+
+    public boolean crearEstudianteConAcceso(
+            Estudiante estudiante, String contrasena) {
+
+        return estudianteDAO.createWithUser(estudiante, contrasena);
+    }
 }

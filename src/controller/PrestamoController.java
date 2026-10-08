@@ -60,39 +60,12 @@ public class PrestamoController {
         return prestamoDAO.listarDetallePrestamos();
     }
 
+
     public synchronized boolean realizarPrestamo(
             int idEstudiante,
             int idLibro) {
 
-        Libro libroEncontrado = null;
-
-        for (Libro libro : libroDAO.readAll()) {
-
-            if (libro.getId() == idLibro) {
-                libroEncontrado = libro;
-                break;
-            }
-        }
-
-        if (libroEncontrado == null) {
-            return false;
-        }
-
-        if (libroEncontrado.getStock() <= 0) {
-            return false;
-        }
-
-        int stockAnterior = libroEncontrado.getStock();
-
-        libroEncontrado.setStock(stockAnterior - 1);
-
-        boolean stockActualizado =
-                libroDAO.update(libroEncontrado);
-
-        if (!stockActualizado) {
-            return false;
-        }
-
+        // Crear el préstamo con sus fechas
         Prestamo prestamo = new Prestamo(
                 idEstudiante,
                 idLibro,
@@ -101,20 +74,10 @@ public class PrestamoController {
                 false
         );
 
-        boolean prestamoCreado =
-                prestamoDAO.create(prestamo);
-
-        if (!prestamoCreado) {
-
-            // Si falla el préstamo, devuelve el stock
-            libroEncontrado.setStock(stockAnterior);
-            libroDAO.update(libroEncontrado);
-
-            return false;
-        }
-
-        return true;
+        // Registrar préstamo y descontar stock
+        return prestamoDAO.registrarPrestamoTransaccional(prestamo);
     }
+
 
     public List<LibroMasPrestado> listarLibrosMasPrestados() {
 
@@ -149,5 +112,9 @@ public class PrestamoController {
         }
 
         return historial;
+    }
+
+    public boolean devolverPrestamo(int idPrestamo) {
+        return prestamoDAO.registrarDevolucionTransaccional(idPrestamo);
     }
 }

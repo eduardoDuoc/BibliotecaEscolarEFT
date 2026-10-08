@@ -2,6 +2,7 @@ package view;
 
 import controller.UsuarioController;
 import model.Usuario;
+import model.Persona;
 
 import javax.swing.*;
 
@@ -60,6 +61,14 @@ public class VentanaAutenticacion extends JFrame {
             return;
         }
 
+        Persona personaAutenticada = usuario;
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Bienvenido al sistema.\n"
+                        + personaAutenticada.obtenerDescripcion()
+        );
+
         if (usuario.getRol().equalsIgnoreCase("bibliotecario")) {
 
             VentanaAdmin ventanaAdmin =
@@ -70,7 +79,7 @@ public class VentanaAutenticacion extends JFrame {
         } else if (usuario.getRol().equalsIgnoreCase("estudiante")) {
 
             VentanaEstudiante ventanaEstudiante =
-                    new VentanaEstudiante();
+                    new VentanaEstudiante(usuario);
 
             ventanaEstudiante.setVisible(true);
         }

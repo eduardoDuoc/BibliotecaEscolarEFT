@@ -30,29 +30,31 @@ public class PrestamoDAOImpl implements PrestamoDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, prestamo.getIdEstudiante());
-            ps.setInt(2, prestamo.getIdLibro());
+                ps.setInt(1, prestamo.getIdEstudiante());
+                ps.setInt(2, prestamo.getIdLibro());
 
-            ps.setDate(
-                    3,
-                    Date.valueOf(prestamo.getFechaPrestamo())
-            );
+                ps.setDate(
+                        3,
+                        Date.valueOf(prestamo.getFechaPrestamo())
+                );
 
-            ps.setDate(
-                    4,
-                    Date.valueOf(prestamo.getFechaDevolucion())
-            );
+                ps.setDate(
+                        4,
+                        Date.valueOf(prestamo.getFechaDevolucion())
+                );
 
-            ps.setBoolean(
-                    5,
-                    prestamo.isDevuelto()
-            );
+                ps.setBoolean(
+                        5,
+                        prestamo.isDevuelto()
+                );
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+
+            }
 
         } catch (SQLException e) {
 
@@ -75,39 +77,40 @@ public class PrestamoDAOImpl implements PrestamoDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
 
-            ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
 
-            while (rs.next()) {
+                    Prestamo prestamo = new Prestamo();
 
-                Prestamo prestamo = new Prestamo();
+                    prestamo.setId(
+                            rs.getInt("id")
+                    );
 
-                prestamo.setId(
-                        rs.getInt("id")
-                );
+                    prestamo.setIdEstudiante(
+                            rs.getInt("id_estudiante")
+                    );
 
-                prestamo.setIdEstudiante(
-                        rs.getInt("id_estudiante")
-                );
+                    prestamo.setIdLibro(
+                            rs.getInt("id_libro")
+                    );
 
-                prestamo.setIdLibro(
-                        rs.getInt("id_libro")
-                );
+                    prestamo.setFechaPrestamo(
+                            rs.getDate("fecha_prestamo").toLocalDate()
+                    );
 
-                prestamo.setFechaPrestamo(
-                        rs.getDate("fecha_prestamo").toLocalDate()
-                );
+                    prestamo.setFechaDevolucion(
+                            rs.getDate("fecha_devolucion").toLocalDate()
+                    );
 
-                prestamo.setFechaDevolucion(
-                        rs.getDate("fecha_devolucion").toLocalDate()
-                );
+                    prestamo.setDevuelto(
+                            rs.getBoolean("devuelto")
+                    );
 
-                prestamo.setDevuelto(
-                        rs.getBoolean("devuelto")
-                );
+                    prestamos.add(prestamo);
+                }
 
-                prestamos.add(prestamo);
             }
 
         } catch (SQLException e) {
@@ -136,41 +139,43 @@ public class PrestamoDAOImpl implements PrestamoDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(
-                    1,
-                    prestamo.getIdEstudiante()
-            );
+                ps.setInt(
+                        1,
+                        prestamo.getIdEstudiante()
+                );
 
-            ps.setInt(
-                    2,
-                    prestamo.getIdLibro()
-            );
+                ps.setInt(
+                        2,
+                        prestamo.getIdLibro()
+                );
 
-            ps.setDate(
-                    3,
-                    Date.valueOf(prestamo.getFechaPrestamo())
-            );
+                ps.setDate(
+                        3,
+                        Date.valueOf(prestamo.getFechaPrestamo())
+                );
 
-            ps.setDate(
-                    4,
-                    Date.valueOf(prestamo.getFechaDevolucion())
-            );
+                ps.setDate(
+                        4,
+                        Date.valueOf(prestamo.getFechaDevolucion())
+                );
 
-            ps.setBoolean(
-                    5,
-                    prestamo.isDevuelto()
-            );
+                ps.setBoolean(
+                        5,
+                        prestamo.isDevuelto()
+                );
 
-            ps.setInt(
-                    6,
-                    prestamo.getId()
-            );
+                ps.setInt(
+                        6,
+                        prestamo.getId()
+                );
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+
+            }
 
         } catch (SQLException e) {
 
@@ -192,13 +197,15 @@ public class PrestamoDAOImpl implements PrestamoDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+                ps.setInt(1, id);
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+
+            }
 
         } catch (SQLException e) {
 
@@ -236,58 +243,57 @@ public class PrestamoDAOImpl implements PrestamoDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps =
-                    con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
 
-            ResultSet rs =
-                    ps.executeQuery();
+                while (rs.next()) {
 
-            while (rs.next()) {
+                    DetallePrestamo detalle =
+                            new DetallePrestamo();
 
-                DetallePrestamo detalle =
-                        new DetallePrestamo();
+                    detalle.setIdPrestamo(
+                            rs.getInt("id_prestamo")
+                    );
 
-                detalle.setIdPrestamo(
-                        rs.getInt("id_prestamo")
-                );
+                    detalle.setNombreEstudiante(
+                            rs.getString("nombre_estudiante")
+                    );
 
-                detalle.setNombreEstudiante(
-                        rs.getString("nombre_estudiante")
-                );
+                    detalle.setRut(
+                            rs.getString("rut")
+                    );
 
-                detalle.setRut(
-                        rs.getString("rut")
-                );
+                    detalle.setCurso(
+                            rs.getString("curso")
+                    );
 
-                detalle.setCurso(
-                        rs.getString("curso")
-                );
+                    detalle.setCorreo(
+                            rs.getString("correo")
+                    );
 
-                detalle.setCorreo(
-                        rs.getString("correo")
-                );
+                    detalle.setTituloLibro(
+                            rs.getString("titulo_libro")
+                    );
 
-                detalle.setTituloLibro(
-                        rs.getString("titulo_libro")
-                );
+                    detalle.setIsbn(
+                            rs.getString("isbn")
+                    );
 
-                detalle.setIsbn(
-                        rs.getString("isbn")
-                );
+                    detalle.setFechaPrestamo(
+                            rs.getDate("fecha_prestamo").toLocalDate()
+                    );
 
-                detalle.setFechaPrestamo(
-                        rs.getDate("fecha_prestamo").toLocalDate()
-                );
+                    detalle.setFechaDevolucion(
+                            rs.getDate("fecha_devolucion").toLocalDate()
+                    );
 
-                detalle.setFechaDevolucion(
-                        rs.getDate("fecha_devolucion").toLocalDate()
-                );
+                    detalle.setDevuelto(
+                            rs.getBoolean("devuelto")
+                    );
 
-                detalle.setDevuelto(
-                        rs.getBoolean("devuelto")
-                );
+                    detalles.add(detalle);
+                }
 
-                detalles.add(detalle);
             }
 
         } catch (SQLException e) {
@@ -321,30 +327,29 @@ public class PrestamoDAOImpl implements PrestamoDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps =
-                    con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
 
-            ResultSet rs =
-                    ps.executeQuery();
+                while (rs.next()) {
 
-            while (rs.next()) {
+                    LibroMasPrestado libro =
+                            new LibroMasPrestado();
 
-                LibroMasPrestado libro =
-                        new LibroMasPrestado();
+                    libro.setTitulo(
+                            rs.getString("titulo")
+                    );
 
-                libro.setTitulo(
-                        rs.getString("titulo")
-                );
+                    libro.setIsbn(
+                            rs.getString("isbn")
+                    );
 
-                libro.setIsbn(
-                        rs.getString("isbn")
-                );
+                    libro.setCantidadPrestamos(
+                            rs.getInt("cantidad_prestamos")
+                    );
 
-                libro.setCantidadPrestamos(
-                        rs.getInt("cantidad_prestamos")
-                );
+                    libros.add(libro);
+                }
 
-                libros.add(libro);
             }
 
         } catch (SQLException e) {
@@ -357,4 +362,174 @@ public class PrestamoDAOImpl implements PrestamoDAO {
 
         return libros;
     }
+
+
+    @Override
+    public boolean registrarPrestamoTransaccional(Prestamo prestamo) {
+
+        String sqlStock =
+                "UPDATE libros SET stock = stock - 1 " +
+                        "WHERE id = ? AND stock > 0";
+
+        String sqlPrestamo =
+                "INSERT INTO prestamos " +
+                        "(id_estudiante, id_libro, fecha_prestamo, " +
+                        "fecha_devolucion, devuelto) " +
+                        "VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection con = DatabaseConnection.getInstance()
+                .crearConexionTransaccional()) {
+
+            con.setAutoCommit(false);
+
+            try {
+
+                // 1. Descontar stock disponible
+                try (PreparedStatement psStock =
+                             con.prepareStatement(sqlStock)) {
+
+                    psStock.setInt(1, prestamo.getIdLibro());
+
+                    int filas = psStock.executeUpdate();
+
+                    if (filas != 1) {
+                        con.rollback();
+                        return false;
+                    }
+                }
+
+                // 2. Registrar el préstamo
+                try (PreparedStatement psPrestamo =
+                             con.prepareStatement(sqlPrestamo)) {
+
+                    psPrestamo.setInt(
+                            1, prestamo.getIdEstudiante()
+                    );
+
+                    psPrestamo.setInt(
+                            2, prestamo.getIdLibro()
+                    );
+
+                    psPrestamo.setDate(
+                            3, Date.valueOf(prestamo.getFechaPrestamo())
+                    );
+
+                    psPrestamo.setDate(
+                            4, Date.valueOf(prestamo.getFechaDevolucion())
+                    );
+
+                    psPrestamo.setBoolean(
+                            5, prestamo.isDevuelto()
+                    );
+
+                    int filas = psPrestamo.executeUpdate();
+
+                    if (filas != 1) {
+                        con.rollback();
+                        return false;
+                    }
+                }
+
+                // 3. Confirmar ambas operaciones
+                con.commit();
+                return true;
+
+            } catch (SQLException e) {
+
+                try {
+                    con.rollback();
+                } catch (SQLException rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+
+                System.out.println(
+                        "Error en la transacción: " + e.getMessage()
+                );
+
+                return false;
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error de conexión transaccional: "
+                            + e.getMessage()
+            );
+
+            return false;
+        }
+    }
+
+
+    @Override
+    public boolean registrarDevolucionTransaccional(int idPrestamo) {
+
+        String sqlDevolucion =
+                "UPDATE prestamos SET devuelto = 1 " +
+                        "WHERE id = ? AND devuelto = 0";
+
+        String sqlStock =
+                "UPDATE libros SET stock = stock + 1 " +
+                        "WHERE id = (SELECT id_libro FROM prestamos WHERE id = ?)";
+
+        try (Connection con = DatabaseConnection.getInstance()
+                .crearConexionTransaccional()) {
+
+            con.setAutoCommit(false);
+
+            try {
+                // 1. Registrar la devolución
+                try (PreparedStatement ps =
+                             con.prepareStatement(sqlDevolucion)) {
+
+                    ps.setInt(1, idPrestamo);
+
+                    if (ps.executeUpdate() != 1) {
+                        con.rollback();
+                        return false;
+                    }
+                }
+
+                // 2. Recuperar una unidad de stock
+                try (PreparedStatement ps =
+                             con.prepareStatement(sqlStock)) {
+
+                    ps.setInt(1, idPrestamo);
+
+                    if (ps.executeUpdate() != 1) {
+                        con.rollback();
+                        return false;
+                    }
+                }
+
+                // 3. Confirmar ambas operaciones
+                con.commit();
+                return true;
+
+            } catch (SQLException e) {
+
+                try {
+                    con.rollback();
+                } catch (SQLException rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+
+                System.out.println(
+                        "Error en devolución: " + e.getMessage()
+                );
+
+                return false;
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error de conexión: " + e.getMessage()
+            );
+
+            return false;
+        }
+    }
+
+
 }

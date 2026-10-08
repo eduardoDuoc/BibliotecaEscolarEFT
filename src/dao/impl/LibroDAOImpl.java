@@ -24,18 +24,20 @@ public class LibroDAOImpl implements LibroDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, libro.getTitulo());
-            ps.setString(2, libro.getAutor());
-            ps.setString(3, libro.getIsbn());
-            ps.setString(4, libro.getEditorial());
-            ps.setInt(5, libro.getStock());
-            ps.setInt(6, libro.getIdCategoria());
+                ps.setString(1, libro.getTitulo());
+                ps.setString(2, libro.getAutor());
+                ps.setString(3, libro.getIsbn());
+                ps.setString(4, libro.getEditorial());
+                ps.setInt(5, libro.getStock());
+                ps.setInt(6, libro.getIdCategoria());
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+
+            }
 
         } catch (SQLException e) {
 
@@ -58,23 +60,24 @@ public class LibroDAOImpl implements LibroDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
 
-            ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
 
-            while (rs.next()) {
+                    Libro libro = new Libro();
 
-                Libro libro = new Libro();
+                    libro.setId(rs.getInt("id"));
+                    libro.setTitulo(rs.getString("titulo"));
+                    libro.setAutor(rs.getString("autor"));
+                    libro.setIsbn(rs.getString("isbn"));
+                    libro.setEditorial(rs.getString("editorial"));
+                    libro.setStock(rs.getInt("stock"));
+                    libro.setIdCategoria(rs.getInt("id_categoria"));
 
-                libro.setId(rs.getInt("id"));
-                libro.setTitulo(rs.getString("titulo"));
-                libro.setAutor(rs.getString("autor"));
-                libro.setIsbn(rs.getString("isbn"));
-                libro.setEditorial(rs.getString("editorial"));
-                libro.setStock(rs.getInt("stock"));
-                libro.setIdCategoria(rs.getInt("id_categoria"));
+                    libros.add(libro);
+                }
 
-                libros.add(libro);
             }
 
         } catch (SQLException e) {
@@ -102,19 +105,21 @@ public class LibroDAOImpl implements LibroDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, libro.getTitulo());
-            ps.setString(2, libro.getAutor());
-            ps.setString(3, libro.getIsbn());
-            ps.setString(4, libro.getEditorial());
-            ps.setInt(5, libro.getStock());
-            ps.setInt(6, libro.getIdCategoria());
-            ps.setInt(7, libro.getId());
+                ps.setString(1, libro.getTitulo());
+                ps.setString(2, libro.getAutor());
+                ps.setString(3, libro.getIsbn());
+                ps.setString(4, libro.getEditorial());
+                ps.setInt(5, libro.getStock());
+                ps.setInt(6, libro.getIdCategoria());
+                ps.setInt(7, libro.getId());
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+
+            }
 
         } catch (SQLException e) {
 
@@ -135,13 +140,15 @@ public class LibroDAOImpl implements LibroDAO {
             Connection con =
                     DatabaseConnection.getInstance().getConnection();
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+                ps.setInt(1, id);
 
-            int filasAfectadas = ps.executeUpdate();
+                int filasAfectadas = ps.executeUpdate();
 
-            return filasAfectadas > 0;
+                return filasAfectadas > 0;
+
+            }
 
         } catch (SQLException e) {
             System.out.println(

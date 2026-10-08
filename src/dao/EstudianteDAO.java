@@ -13,4 +13,6 @@ public interface EstudianteDAO {
     boolean update(Estudiante estudiante);
 
     boolean delete(int id);
+
+    boolean createWithUser(Estudiante estudiante, String contrasena);
 }

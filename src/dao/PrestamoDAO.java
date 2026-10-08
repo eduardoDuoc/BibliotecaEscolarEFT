@@ -19,4 +19,8 @@ public interface PrestamoDAO {
     List<DetallePrestamo> listarDetallePrestamos();
 
     List<LibroMasPrestado> listarLibrosMasPrestados();
+
+    boolean registrarPrestamoTransaccional(Prestamo prestamo);
+
+    boolean registrarDevolucionTransaccional(int idPrestamo);
 }
